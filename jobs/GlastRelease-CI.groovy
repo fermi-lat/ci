@@ -1,4 +1,4 @@
-def project = 'ScienceTools'
+def project = 'GlastRelease'
 
 
 try {
@@ -15,7 +15,7 @@ try {
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
-                    sh 'source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop $repoman_package $repoman_ref'
+                    sh 'source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --master $repoman_package $repoman_ref'
                 }
             }
         }
@@ -30,9 +30,9 @@ try {
             builders[buildNode] = {
                 node(buildNode) {
                     def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
-                    def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${os_arch_compiler}"
+                    def artifact_name = "$JOB_BASE_NAME-$BUILD_NUMBER-$os_arch_compiler"
                     sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                        -C ${project} --site-dir=../SConsShared/site_scons \
+                        -C GlastRelease --site-dir=../SConsShared/site_scons \
                        --with-GLAST-EXT=/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"""
                     sh """
                         mkdir ${artifact_name}
@@ -42,7 +42,6 @@ try {
                         cp -r data ${artifact_name}/data
                         cp -r include ${artifact_name}/include
                         cp -r python ${artifact_name}/python
-                        cp -r syspfiles ${artifact_name}/syspfiles
                         cp -r xml ${artifact_name}/xml
                         tar czf ${artifact_name}.tar.gz ${artifact_name}
                     """
@@ -55,18 +54,13 @@ try {
 
     stage('validate') {
         node(blessed){
-            echo "Hello World 3"
-            // sh 'scons -C ScienceTools-scons integration'
+            echo "[Validation]"
         }
     }
 
-    // stage('doxygen') {
-    //     echo "hello world 1"
-    // }
-
     stage('deploy') {
         node(blessed){
-            echo "Hello World 4"
+            echo "[Deployment]"
             //sh 'cp /nfs/slac/g/glast/ground/containers/singularity/containers.master.img.gz .'
             //archive 'containers.master.img.gz'
         }
@@ -138,4 +132,3 @@ def notifyBuild(String buildStatus = 'STARTED') {
     )
   }
 }
-

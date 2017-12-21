@@ -43,7 +43,7 @@ stage('Parse Webhook') {
         } else {
             for (project in projects){
                 sh "git clone git@github.com:fermi-lat/${project}.git"
-                def statusCode = sh script:"cat ${project}/packageList.txt | grep '${pkg}'", returnStatus:true
+                def statusCode = sh script:"cat ${project}/packageList.txt | grep '^${pkg}'", returnStatus:true
                 echo "Return: ${statusCode}"
                 if (statusCode == 0){
                     projectsToBuild.add(project)
