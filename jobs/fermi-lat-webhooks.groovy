@@ -25,12 +25,20 @@ stage('Parse Webhook') {
         // Only trigger on pull requests that are opened, edited, or reopened
         if( "pull_request" in payloadObject && payloadObject.action in ["opened", "edited", "reopened"]) {
             eventType = "pull_request"
+            pkg = payloadObject.repository.name
             ref = payloadObject.pull_request.head.ref
             sha = payloadObject.pull_request.head.sha
             description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name}"
             currentBuild.description = description
         } else if ("pusher" in payloadObject){
             eventType = "push"
+            pkg = payloadObject.repository.name
+            ref_name = payloadObject.ref.split("/")[-1]
+            ref = "${payloadObject.head_commit.id} ${ref_name}"
+            sha = payloadObject.head_commit.id
+            short_sha = sha.substring(0,7)
+            description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}"
+            currentBuild.description = description
         } else {
             currentBuild.result = 'SUCCESS'
             return
@@ -48,7 +56,6 @@ stage('Parse Webhook') {
                 if (statusCode == 0){
                     projectsToBuild.add(project)
                 }
-
             }
         }
     }
@@ -60,8 +67,9 @@ stage('Parse Webhook') {
           parameters: [
               [$class: 'StringParameterValue', name: 'repoman_ref', value: ref],
               [$class: 'StringParameterValue', name: 'sha', value: sha],
-              [$class: 'StringParameterValue', name: 'pkg', value: pkg]
-            ],
+              [$class: 'StringParameterValue', name: 'pkg', value: pkg],
+              [$class: 'StringParameterValue', name: 'description', value: description]
+            ], 
             wait:false
         )
     }
@@ -72,4 +80,3 @@ def slurpJson(String data) {
   def slurper = new groovy.json.JsonSlurper()
   slurper.parseText(data)
 }
-

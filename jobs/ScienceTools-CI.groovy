@@ -1,5 +1,8 @@
 def project = 'ScienceTools'
 
+if (params.description){
+    currentBuild.description = description
+}
 
 try {
     notifyBuild('STARTED')
@@ -84,9 +87,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} (${env.BUILD_URL})"
-  def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
+  def summary = "${subject} (${env.RUN_DISPLAY_URL})"
 
   // Override default values based on build status
   if (buildStatus == 'STARTED') {
@@ -119,17 +120,18 @@ def notifyBuild(String buildStatus = 'STARTED') {
     default:
       githubStatus = 'FAILURE'
   }
-  if (sha != null){
-    echo "${pkg} sha: ${sha}"
+  // If this is a commit in a repo in github, notify github
+  if (params.sha){
+    echo "${params.pkg} sha: ${params.sha}"
     githubNotify (account: 'fermi-lat',
       context: 'Jenkins CI Build',
       credentialsId: 'github.com_slac-glast',
       description: 'CI Build',
       gitApiUrl: '',
-      repo: "${pkg}",
-      sha: "${sha}",
+      repo: "${params.pkg}",
+      sha: "${params.sha}",
       status: githubStatus,
-      targetUrl: "${env.BUILD_URL}"
+      targetUrl: "${env.RUN_DISPLAY_URL}"
     )
   }
 }
