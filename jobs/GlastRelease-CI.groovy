@@ -18,7 +18,7 @@ try {
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
-                    sh 'source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --master $repoman_package $repoman_ref'
+                    sh 'source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop $repoman_package $repoman_ref'
                 }
             }
         }
@@ -33,9 +33,9 @@ try {
             builders[buildNode] = {
                 node(buildNode) {
                     def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
-                    def artifact_name = "$JOB_BASE_NAME-$BUILD_NUMBER-$os_arch_compiler"
+                    def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${os_arch_compiler}"
                     sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                        -C GlastRelease --site-dir=../SConsShared/site_scons \
+                        -C ${project} --site-dir=../SConsShared/site_scons \
                        --with-GLAST-EXT=/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"""
                     sh """
                         mkdir ${artifact_name}
