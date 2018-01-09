@@ -28,7 +28,7 @@ stage('Parse Webhook') {
             pkg = payloadObject.repository.name
             ref = payloadObject.pull_request.head.ref
             sha = payloadObject.pull_request.head.sha
-            description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name}"
+            description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name}</a>"
             currentBuild.description = description
         } else if ("pusher" in payloadObject){
             eventType = "push"
@@ -37,7 +37,7 @@ stage('Parse Webhook') {
             ref = "${payloadObject.head_commit.id} ${ref_name}"
             sha = payloadObject.head_commit.id
             short_sha = sha.substring(0,7)
-            description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}"
+            description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}</a>"
             currentBuild.description = description
         } else {
             currentBuild.result = 'SUCCESS'
