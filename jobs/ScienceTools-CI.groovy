@@ -1,4 +1,5 @@
-def project = 'ScienceTools'
+def project = "ScienceTools"
+
 
 properties([
      parameters([
