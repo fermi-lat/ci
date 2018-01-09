@@ -79,8 +79,7 @@ stage('Parse Webhook') {
               [$class: 'StringParameterValue', name: 'sha', value: sha],
               [$class: 'StringParameterValue', name: 'pkg', value: pkg],
               [$class: 'StringParameterValue', name: 'description', value: description]
-            ], 
-            wait:false
+            ] 
         )
     }
 }
