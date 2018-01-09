@@ -33,7 +33,6 @@ stage('Parse Webhook') {
             ref = "${sha} ${ref_name}"
             short_sha = sha.substring(0,7)
             description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name} at ${short_sha}</a>"
-            currentBuild.description = description
         } else if ("pusher" in payloadObject){
             eventType = "push"
             pkg = payloadObject.repository.name
@@ -48,7 +47,6 @@ stage('Parse Webhook') {
             ref = "${sha} ${ref_name}"
             short_sha = sha.substring(0,7)
             description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}</a>"
-            currentBuild.description = description
         } else {
             currentBuild.result = 'SUCCESS'
             return
@@ -69,8 +67,14 @@ stage('Parse Webhook') {
             }
         }
     }
-    echo "Building:"
-    echo "${projectsToBuild}"
+
+    if(!projectsToBuild){
+        currentBuild.result = "SUCCESS"
+        return
+    }
+
+    echo "Building: ${projectsToBuild}"
+    currentBuild.description = description
     for (project in projectsToBuild){
         def job = "${project}-CI"
         def build = build (job: job,
