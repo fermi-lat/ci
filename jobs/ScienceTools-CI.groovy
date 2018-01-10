@@ -68,7 +68,8 @@ try {
                     //     grep '^\\s*test_\\w* = progEnv\\.Program(' **/SConscript | cut -d "'" -f2
                     // """, returnStdout:true).split('\n')
 
-                    def testTargets = readYaml "ScienceTools/testList.yaml"
+                    pwd
+                    def testTargets = readYaml file:"ScienceTools/testList.yaml"
 
                     withEnv(["GLAST_EXT=${glast_ext}"]){
                         // sh "bin/${os_arch_compiler}/test_Likelihood"
