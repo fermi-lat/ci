@@ -14,6 +14,8 @@ properties([
 def projects = ["ScienceTools", "GlastRelease"]
 def projectsToBuild = []
 
+def integrationRefs = ["master", "L1"]
+
 stage('Parse Webhook') {
     def ref
     def sha
@@ -23,22 +25,28 @@ stage('Parse Webhook') {
         def payloadObject = readJSON text: payload
         def eventType = ""
         // Only trigger on pull requests that are opened, edited, or reopened
-        if( "pull_request" in payloadObject && payloadObject.action in ["opened", "edited", "reopened"]) {
+        if("pull_request" in payloadObject && payloadObject.action in ["opened", "edited", "reopened", "synchronize"]) {
             eventType = "pull_request"
             pkg = payloadObject.repository.name
-            ref = payloadObject.pull_request.head.ref
+            ref_name = payloadObject.pull_request.head.ref
             sha = payloadObject.pull_request.head.sha
-            description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name}"
-            currentBuild.description = description
+            ref = "${sha} ${ref_name}"
+            short_sha = sha.substring(0,7)
+            description = "<a href='${payloadObject.pull_request.html_url}'>PR #${payloadObject.pull_request.number} - ${payloadObject.pull_request.head.repo.name} at ${short_sha}</a>"
         } else if ("pusher" in payloadObject){
             eventType = "push"
             pkg = payloadObject.repository.name
             ref_name = payloadObject.ref.split("/")[-1]
-            ref = "${payloadObject.head_commit.id} ${ref_name}"
+            // Only build commits an integration branches
+            integrationBranch = ref_name in integrationRefs
+            if (!integrationBranch){
+                currentBuild.result = 'SUCCESS'
+                return
+            }
             sha = payloadObject.head_commit.id
+            ref = "${sha} ${ref_name}"
             short_sha = sha.substring(0,7)
-            description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}"
-            currentBuild.description = description
+            description = "<a href='${payloadObject.head_commit.url}'>Commit ${short_sha} in ${pkg}/${ref_name}</a>"
         } else {
             currentBuild.result = 'SUCCESS'
             return
@@ -59,8 +67,14 @@ stage('Parse Webhook') {
             }
         }
     }
-    echo "Building:"
-    echo "${projectsToBuild}"
+
+    if(!projectsToBuild){
+        currentBuild.result = "SUCCESS"
+        return
+    }
+
+    echo "Building: ${projectsToBuild}"
+    currentBuild.description = description
     for (project in projectsToBuild){
         def job = "${project}-CI"
         def build = build (job: job,
@@ -69,8 +83,7 @@ stage('Parse Webhook') {
               [$class: 'StringParameterValue', name: 'sha', value: sha],
               [$class: 'StringParameterValue', name: 'pkg', value: pkg],
               [$class: 'StringParameterValue', name: 'description', value: description]
-            ], 
-            wait:false
+            ] 
         )
     }
 }

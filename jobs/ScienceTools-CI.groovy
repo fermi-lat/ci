@@ -1,4 +1,20 @@
-def project = 'ScienceTools'
+def project = "ScienceTools"
+
+
+properties([
+     parameters([
+       stringParam(
+         name: 'repoman_ref',
+         description: 'Branch, Ref or Commit to build'
+       )
+     ])
+   ])
+
+if (!params.repoman_ref){
+    echo "Nothing to Build"
+    currentBuild.result = "SUCCESS"
+    return
+}
 
 if (params.description){
     currentBuild.description = description
@@ -18,7 +34,7 @@ try {
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
-                    sh 'source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop $repoman_package $repoman_ref'
+                    sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
                 }
             }
         }
