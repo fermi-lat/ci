@@ -61,14 +61,17 @@ try {
                     """
 
                     echo "[Test]"
+
                     // Pull test names from SConscript target names. Thus do not expect that
                     // tests were build for certain.
-                    def testTargets = sh(script:"""
-                        grep '^\\s*test_\\w* = progEnv\\.Program(' **/SConscript | cut -d "'" -f2
-                    """, returnStdout:true).split('\n')
+                    // def testTargets = sh(script:"""
+                    //     grep '^\\s*test_\\w* = progEnv\\.Program(' **/SConscript | cut -d "'" -f2
+                    // """, returnStdout:true).split('\n')
+
+                    def testTargets = readYaml "ScienceTools/testList.yaml"
 
                     withEnv(["GLAST_EXT=${glast_ext}"]){
-                        sh "bin/${os_arch_compiler}/test_Likelihood"
+                        // sh "bin/${os_arch_compiler}/test_Likelihood"
                         for (test in testTargets) {
                           sh "bin/${os_arch_compiler}/${test}"
                         }
