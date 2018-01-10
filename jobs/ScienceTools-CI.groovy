@@ -34,7 +34,7 @@ try {
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
-                    sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
+                    // sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
                 }
             }
         }
@@ -53,12 +53,12 @@ try {
                     def glast_ext = "/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"
 
                     echo "[Build]"
-                    sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                        -C ${project} \
-                        --site-dir=../SConsShared/site_scons \
-                        --with-GLAST-EXT=${glast_ext}\
-                        all
-                    """
+                    // sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
+                    //     -C ${project} \
+                    //     --site-dir=../SConsShared/site_scons \
+                    //     --with-GLAST-EXT=${glast_ext}\
+                    //     all
+                    // """
 
                     echo "[Test]"
 
@@ -68,7 +68,6 @@ try {
                     //     grep '^\\s*test_\\w* = progEnv\\.Program(' **/SConscript | cut -d "'" -f2
                     // """, returnStdout:true).split('\n')
 
-                    pwd
                     def testTargets = readYaml file:"ScienceTools/testList.yaml"
 
                     withEnv(["GLAST_EXT=${glast_ext}"]){
