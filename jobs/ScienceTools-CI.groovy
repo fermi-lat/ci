@@ -89,7 +89,7 @@ try {
                         tar czf ${artifact_name}.tar.gz ${artifact_name}
                     """
                     archive "${artifact_name}.tar.gz"
-                    sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha
+                    sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha \
                         *.root *.par *.rsp *.tpl *.xml *.ccube *.healcube *-out
                     """
                 }
