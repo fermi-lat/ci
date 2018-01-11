@@ -53,25 +53,16 @@ try {
                     def glast_ext = "/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"
 
                     echo "[Build]"
-                    // sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                    //     -C ${project} \
-                    //     --site-dir=../SConsShared/site_scons \
-                    //     --with-GLAST-EXT=${glast_ext}\
-                    //     all
-                    // """
+                    sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
+                        -C ${project} \
+                        --site-dir=../SConsShared/site_scons \
+                        --with-GLAST-EXT=${glast_ext}\
+                        all
+                    """
 
                     echo "[Test]"
-
-                    // Pull test names from SConscript target names. Thus do not expect that
-                    // tests were build for certain.
-                    // def testTargets = sh(script:"""
-                    //     grep '^\\s*test_\\w* = progEnv\\.Program(' **/SConscript | cut -d "'" -f2
-                    // """, returnStdout:true).split('\n')
-
                     def testTargets = readYaml file:"ScienceTools/testList.yaml"
-
                     withEnv(["GLAST_EXT=${glast_ext}"]){
-                        // sh "bin/${os_arch_compiler}/test_Likelihood"
                         for (test in testTargets) {
                           sh "bin/${os_arch_compiler}/${test}"
                         }
