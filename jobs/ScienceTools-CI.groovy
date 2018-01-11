@@ -81,7 +81,7 @@ try {
                     """
                     archive "${artifact_name}.tar.gz"
                     sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha \
-                        *.root *.par *.rsp *.tpl *.xml *.ccube *.healcube *-out
+                        *.par *.rsp *.tpl *.xml *.ccube *.healcube *-out
                     """
                 }
             }
