@@ -75,7 +75,11 @@ try {
                     def testTargets = readYaml file:"ScienceTools/testList.yaml"
                     withEnv(["GLAST_EXT=${glast_ext}"]){
                         for (test in testTargets) {
-                          sh "bin/${os_arch_compiler}/${test}"
+                            try {
+                                sh "bin/${os_arch_compiler}/${test}"
+                            } catch (e) {
+                                currentBuild.result = "TEST_FAILURE"
+                            }
                         }
                     }
                     sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha \
