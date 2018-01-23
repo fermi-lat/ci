@@ -23,9 +23,12 @@ if (params.description){
 try {
     notifyBuild('STARTED')
 
+
     def blessed = 'glast'
     def labels = ['fermi-build01']
     //def labels = ['fermi-build01', 'lsst-build01', 'srs-build01']
+    def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
+    def glast_ext = "/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"
 
     stage('Initialize Workspaces') {
         def builders = [:]
@@ -41,18 +44,61 @@ try {
         parallel builders
     }
 
-    stage('Compile and Test') {
+    stage('Compile') {
         def builders = [:]
         for (x in labels) {
             def buildNode = x // Need to bind the label variable before the closure - can't do 'for (label in labels)'
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
-                    def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
-                    def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${os_arch_compiler}"
+                    echo "[Build]"
                     sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                        -C ${project} --site-dir=../SConsShared/site_scons \
-                       --with-GLAST-EXT=/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"""
+                        -C ${project} \
+                        --site-dir=../SConsShared/site_scons \
+                        --with-GLAST-EXT=${glast_ext}\
+                        all
+                    """
+                }
+            }
+        }
+        parallel builders
+    }
+
+    stage('Test') {
+        def builders = [:]
+        for (x in labels) {
+            def buildNode = x // Need to bind the label variable before the closure - can't do 'for (label in labels)'
+            // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
+            builders[buildNode] = {
+                node(buildNode) {
+                    echo "[Test]"
+                    def testTargets = readYaml file:"ScienceTools/testList.yaml"
+                    withEnv(["GLAST_EXT=${glast_ext}"]){
+                        for (test in testTargets) {
+                            try {
+                                sh "bin/${os_arch_compiler}/${test}"
+                            } catch (e) {
+                                currentBuild.result = "TEST_FAILURE"
+                            }
+                        }
+                    }
+                    sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha \
+                        *.par *.rsp *.tpl *.xml *.ccube *.healcube *-out
+                    """
+                }
+            }
+        }
+        parallel builders
+    }
+
+    stage('Archive') {
+        def builders = [:]
+        for (x in labels) {
+            def buildNode = x // Need to bind the label variable before the closure - can't do 'for (label in labels)'
+            // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
+            builders[buildNode] = {
+                node(buildNode) {
+                    def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${os_arch_compiler}"
                     sh """
                         mkdir ${artifact_name}
                         cp -r bin/${os_arch_compiler} ${artifact_name}/bin
