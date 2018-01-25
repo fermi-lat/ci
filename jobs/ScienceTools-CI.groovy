@@ -112,6 +112,7 @@ try {
                         tar czf ${artifact_name}.tar.gz ${artifact_name}
                     """
                     archive "${artifact_name}.tar.gz"
+                    deleteDir()
                 }
             }
         }
