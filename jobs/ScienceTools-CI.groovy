@@ -37,6 +37,7 @@ try {
             // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
             builders[buildNode] = {
                 node(buildNode) {
+                    deleteDir
                     sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
                 }
             }
