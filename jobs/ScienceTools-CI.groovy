@@ -38,7 +38,11 @@ try {
             builders[buildNode] = {
                 node(buildNode) {
                     sh 'rm -rf *'
-                    sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
+                    sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --bom --force --develop ${project} ${repoman_ref}"
+                    def pkgShas = readJson file:"repoman_bom.json"
+                    for (pkg in pkgShas) {
+                      notifyGithub("STARTED", pkg, pkg.commit)
+                    }
                 }
             }
         }
@@ -172,6 +176,10 @@ def notifyBuild(String buildStatus = 'STARTED') {
       tokenCredentialId: "fermi-lat-slack-token"
       )
 
+  notifyGithub(buildStatus, params.pkg, params.sha)
+}
+
+def notifyGithub(String buildStatus, String pkg, String sha) {
   def githubStatus
   switch (buildStatus) {
     case 'STARTED':
@@ -184,15 +192,15 @@ def notifyBuild(String buildStatus = 'STARTED') {
       githubStatus = 'FAILURE'
   }
   // If this is a commit in a repo in github, notify github
-  if (params.sha){
-    echo "${params.pkg} sha: ${params.sha}"
+  if (sha){
+    echo "${pkg} sha: ${sha}"
     githubNotify (account: 'fermi-lat',
       context: 'Jenkins CI Build',
       credentialsId: 'github.com_slac-glast',
       description: 'CI Build',
       gitApiUrl: '',
-      repo: "${params.pkg}",
-      sha: "${params.sha}",
+      repo: "${pkg}",
+      sha: "${sha}",
       status: githubStatus,
       targetUrl: "${env.RUN_DISPLAY_URL}"
     )
