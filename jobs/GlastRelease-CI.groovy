@@ -55,9 +55,10 @@ try {
                        --with-GLAST-EXT=/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"""
                     sh """
                         mkdir ${artifact_name}
-                        cp -r bin/${os_arch_compiler} ${artifact_name}/bin
-                        cp -r exe/${os_arch_compiler} ${artifact_name}/exe
-                        cp -r lib/${os_arch_compiler} ${artifact_name}/lib
+                        cp -r bin/${os_arch_compiler}-Debug-Optimized ${artifact_name}/bin
+                        cp -r exe/${os_arch_compiler}-Debug-Optimized ${artifact_name}/exe
+                        cp -r lib/${os_arch_compiler}-Debug-Optimized ${artifact_name}/lib
+                        cp -r jobOptions ${artifact_name}/jobOptions
                         cp -r data ${artifact_name}/data
                         cp -r include ${artifact_name}/include
                         cp -r python ${artifact_name}/python
