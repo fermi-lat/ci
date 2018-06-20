@@ -51,6 +51,7 @@ try {
                     def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${os_arch_compiler}"
                     sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
                         -C ${project} --site-dir=../SConsShared/site_scons \
+                       --compile-opt --compile-debug \
                        --with-GLAST-EXT=/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"""
                     sh """
                         mkdir ${artifact_name}
