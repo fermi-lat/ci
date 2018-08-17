@@ -38,7 +38,7 @@ try {
     builders[buildNode] = {
       node('docker') {
         deleteDir()
-        docker.image('fssc/jenkins-conda:bld05').inside{
+        docker.image('fssc/jenkins-conda:bld04').inside{
 
           stage('Initialize Workspaces') {
             sh "git clone https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
