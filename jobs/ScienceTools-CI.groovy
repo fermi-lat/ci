@@ -38,49 +38,26 @@ try {
     builders[buildNode] = {
       node('docker') {
         deleteDir()
-        docker.image('fssc/conda').inside{
+        docker.image('fssc/jenkins-conda:bld05').inside{
 
-          // Create a fermi build space using python 2.7 from conda-forge
           stage('Initialize Workspaces') {
-            echo "Conda Setup"
-            sh "pwd"
-            sh "printenv"
-            sh "ls -lah /miniconda"
-            sh "/miniconda/bin/conda create -n fermi -c conda-forge python=2.7 -y"
-            sh "source activate fermi"
-
-            echo "Acquire Conda Recipe"
             sh "git clone https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
-            sh "cd ScienceTools-conda-recipe"
           }
 
           stage('Compile - Conda build'){
-            echo "Conda Build"
-            sh "/miniconda/bin/conda build -c conda-forge -c fermi_dev_externals . -y"
+            sh '/bin/bash -c ". scl_source devtoolset-2 && conda build -c conda-forge -c fermi_dev_externals ScienceTools-conda-recipe"'
           }
 
           stage('Test - fermitools-test-scripts'){
-            echo "Install tests from Conda"
-            sh "/miniconda/bin/conda install -c fermi_dev_externals fermitools-test-scripts -y"
+            sh '/bin/bash -c "conda create -n fermi -c conda-forge -c fermi_dev_externals --use-local fermitools fermitools-test-scripts -y"'
 
-            echo "Pulsar Tests"
-            try { sh "ST-pulsar-test" }
+            try { sh '/bin/bash -c "source activate fermi && ST-pulsar-test"' }
+            catch (e) {currentBuild.result = "TEST_FAILURE"}
+            // try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test"' }
+            // catch (e) {currentBuild.result = "TEST_FAILURE"}
+            try { sh '/bin/bash -c "source activate fermi && ST-unit-test --bit64"' }
             catch (e) {currentBuild.result = "TEST_FAILURE"}
 
-            echo "AGN tests"
-            try { sh "ST-AGN-thread-test-Binned" }
-            catch (e) {currentBuild.result = "TEST_FAILURE"}
-            try { sh "ST-AGN-thread-test-Unbinned" }
-            catch (e) {currentBuild.result = "TEST_FAILURE"}
-
-            echo "PIP Installing pyroot & pyds9"
-            // WTH? Someone needs to fix this. These dependencies should not
-            // be necessary to run these test
-            sh "/miniconda/bin/pip install pyroot pyds9"
-
-            echo "ST-unit test"
-            try { sh "ST-unit-test --bit64" }
-            catch (e) {currentBuild.result = "TEST_FAILURE"}
           }
 
           stage('Archive'){
