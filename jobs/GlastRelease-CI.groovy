@@ -66,10 +66,11 @@ try {
                         sh "tar xzf GlastRelease.src.tar.gz"
                         sh "mv src/* . && rmdir src && rm GlastRelease.src.tar.gz"
 
+                        def develop_opt = develop ? "--develop" : ""
                         // Update the source code
                         sh "pip install scons fermi-repoman numpy"
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
-                            sh "repoman checkout ${project} ${repoman_ref}"
+                            sh "repoman checkout ${project} ${develop_opt} ${repoman_ref}"
                         }
 
                         // Verify everything is in order if this looks like a release
