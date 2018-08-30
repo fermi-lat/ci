@@ -14,7 +14,7 @@ properties([
        booleanParam(
          name: 'release',
          defaultValue: false,
-         description: 'Perform a release (can't be executed with `develop`)'
+         description: "Perform a release (can't be executed with `develop`)"
        )
      ])
    ])
