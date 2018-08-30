@@ -1,4 +1,4 @@
-def project = "ScienceTools"
+def project = "FermiTools"
 
 
 properties([
@@ -41,29 +41,31 @@ try {
     docker.image('fssc/jenkins-conda:bld04').inside{
 
       stage('Initialize Workspaces') {
-        sh "git clone https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
+        sh "git clone -b ${repoman_ref} https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
       }
 
       stage('Compile - Conda build'){
-        sh 'scl enable devtoolset-2 "conda build -c conda-forge -c fermi_dev_externals ScienceTools-conda-recipe"'
+        sh 'scl enable devtoolset-2 "conda build -c conda-forge -c fermi ScienceTools-conda-recipe"'
       }
 
       stage('Test - fermitools-test-scripts'){
-        sh '/bin/bash -c "conda create -n fermi -c conda-forge -c fermi_dev_externals --use-local fermitools fermitools-test-scripts -y"'
+        sh '/bin/bash -c "conda create -n fermi -c conda-forge -c fermi --use-local fermitools fermitools-test-scripts -y"'
 
         try { sh '/bin/bash -c "source activate fermi && ST-pulsar-test"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
-        try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Binned"' }
-        catch (e) {currentBuild.result = "TEST_FAILURE"}
-        try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Unbinned"' }
-        catch (e) {currentBuild.result = "TEST_FAILURE"}
+        // try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Binned"' }
+        // catch (e) {currentBuild.result = "TEST_FAILURE"}
+        // try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Unbinned"' }
+        // catch (e) {currentBuild.result = "TEST_FAILURE"}
         try { sh '/bin/bash -c "source activate fermi && ST-unit-test --bit64"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
 
       }
 
-      stage('Deploy to Anaconda Cloud fermi_beta'){
-        sh 'anaconda upload --user fermi-beta fermitools.tar.bz2'
+      stage('Deploy to Anaconda Cloud'){
+        withCredentials([string(credentialsId: 'anaconda-fermi-token', variable: 'ANACONDA_TOKEN')]) {
+          sh "anaconda -v -t ${ANACONDA_TOKEN} upload -l alpha -u fermi /miniconda/conda-bld/linux-64/fermitools*.tar.bz2"
+        }
       }
     }
   }
