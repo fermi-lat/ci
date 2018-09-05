@@ -1,4 +1,4 @@
-def project = "FermiTools"
+def project = "FermiTools-Conda"
 
 
 properties([
@@ -20,10 +20,9 @@ if (params.description){
     currentBuild.description = description
 }
 
-// def images = [ "condaforge-linuxanvil":'condaforge/linux-anvil:latest' ]
 
 try {
-  // notifyBuild('STARTED')
+  notifyBuild('STARTED')
 
 
   def blessed = 'glast'
@@ -31,11 +30,6 @@ try {
   //def labels = ['fermi-build01', 'lsst-build01', 'srs-build01']
   def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
 
-  // def builders = [:]
-  // for (x in labels) {
-  //   def buildNode = x // Need to bind the label variable before the closure - can't do 'for (label in labels)'
-  //   // Create a map to pass in to the 'parallel' step so we can fire all the builds at once
-  //   builders[buildNode] = {
   node('docker') {
     deleteDir()
     docker.image('fssc/jenkins-conda:bld04').inside{
@@ -53,13 +47,12 @@ try {
 
         try { sh '/bin/bash -c "source activate fermi && ST-pulsar-test"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
-        // try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Binned"' }
-        // catch (e) {currentBuild.result = "TEST_FAILURE"}
-        // try { sh '/bin/bash -c "source activate fermi && ST-AGN-thread-test-Unbinned"' }
-        // catch (e) {currentBuild.result = "TEST_FAILURE"}
         try { sh '/bin/bash -c "source activate fermi && ST-unit-test --bit64"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
 
+        if (currentBuild.result != '') {
+          throw new RuntimeException(currentBuild.result)
+        }
       }
 
       stage('Deploy to Anaconda Cloud'){
@@ -69,24 +62,14 @@ try {
       }
     }
   }
-    // }
-  // }
-  // parallel builders
 
-  // stage('validate') {
-  //     node(blessed){ echo "[Validation]" }
-  // }
-
-  // stage('deploy') {
-  //     node(blessed){ echo "[Deployment]" }
-  // }
 } catch (e) {
     // If there was an exception thrown, the build failed
     currentBuild.result = "FAILED"
     throw e
 } finally {
     // Success or failure, always send notifications
-    // notifyBuild(currentBuild.result)
+    notifyBuild(currentBuild.result)
 }
 
 
