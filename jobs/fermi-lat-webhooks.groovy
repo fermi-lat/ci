@@ -11,7 +11,7 @@ properties([
    ])
 
 
-def projects = ["ScienceTools", "GlastRelease"]
+def projects = ["ScienceTools", "GlastRelease", "FermiTools-Conda"]
 def projectsToBuild = []
 
 def integrationRefs = ["master", "L1"]
@@ -83,7 +83,7 @@ stage('Parse Webhook') {
               [$class: 'StringParameterValue', name: 'sha', value: sha],
               [$class: 'StringParameterValue', name: 'pkg', value: pkg],
               [$class: 'StringParameterValue', name: 'description', value: description]
-            ] 
+            ]
         )
     }
 }
