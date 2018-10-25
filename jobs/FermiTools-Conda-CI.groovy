@@ -51,7 +51,7 @@ try {
         catch (e) {currentBuild.result = "TEST_FAILURE"}
 
         if (currentBuild.result != '') {
-          throw new Exception(currentBuild.result)
+          error(currentBuild.result)
         }
       }
 
