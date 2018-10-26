@@ -49,8 +49,6 @@ try {
         catch (e) {currentBuild.result = "TEST_FAILURE"}
         try { sh '/bin/bash -c "source activate fermi && ST-unit-test --bit64"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
-           
-        echo "Build status is: "+currentBuild.result
 
         if (currentBuild.result == "TEST_FAILURE") {
           error(currentBuild.result)
