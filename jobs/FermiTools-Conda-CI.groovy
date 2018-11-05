@@ -50,8 +50,9 @@ try {
         try { sh '/bin/bash -c "source activate fermi && ST-unit-test --bit64"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
 
-        if (currentBuild.result != '') {
-          throw new RuntimeException(currentBuild.result)
+        if (currentBuild.result == "TEST_FAILURE" || currentBuild.result == "FAILURE" || currentBuild.result == "UNSTABLE") {
+          echo "Error! Current build result value is: "+currentBuild.result
+          error(currentBuild.result)
         }
       }
 
