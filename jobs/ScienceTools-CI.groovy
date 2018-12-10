@@ -86,6 +86,9 @@ try {
                     sh """ rm *.fits *.dat *.log *.txt *.lc *.ref *.out *.pha \
                         *.par *.rsp *.tpl *.xml *.ccube *.healcube *-out
                     """
+                    if (currentBuild.result == "TEST_FAILURE") {
+                      throw new Exception(currentBuild.result);
+                    }
                 }
             }
         }
