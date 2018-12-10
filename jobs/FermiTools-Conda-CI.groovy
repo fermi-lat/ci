@@ -36,9 +36,9 @@ try {
 
       stage('Initialize Workspaces') {
         sh "git clone https://github.com/fermi-lat/Fermitools-conda.git"
-        dir ("Fermitools-conda") {
-          sh "git checkout ${repoman_ref.split()[0]}"
-        }
+        // dir ("Fermitools-conda") {
+        //   sh "git checkout ${repoman_ref.split()[0]}"
+        // }
       }
 
       stage('Compile - Conda build'){
