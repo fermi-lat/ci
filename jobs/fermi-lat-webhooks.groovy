@@ -78,13 +78,15 @@ stage('Parse Webhook') {
     currentBuild.description = description
     for (project in projectsToBuild){
         def job = "${project}-CI"
-        def build = build (job: job,
-          parameters: [
+        def params = [
               [$class: 'StringParameterValue', name: 'repoman_ref', value: ref],
               [$class: 'StringParameterValue', name: 'sha', value: sha],
               [$class: 'StringParameterValue', name: 'pkg', value: pkg],
               [$class: 'StringParameterValue', name: 'description', value: description]
-            ],
+            ]
+        echo "- Build ${job} ${params}"
+        def build = build (job: job,
+          parameters: params,
           wait: false
         )
     }

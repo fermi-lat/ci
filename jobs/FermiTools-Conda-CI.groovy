@@ -35,7 +35,7 @@ try {
     docker.image('fssc/jenkins-conda:bld04').inside{
 
       stage('Initialize Workspaces') {
-        sh "git clone -b ${repoman_ref} https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
+        sh "git clone -b ${repoman_ref.split()[0]} https://github.com/fermi-lat/ScienceTools-conda-recipe.git"
       }
 
       stage('Compile - Conda build'){
