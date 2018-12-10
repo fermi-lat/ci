@@ -11,7 +11,7 @@ properties([
    ])
 
 
-def projects = ["ScienceTools", "GlastRelease", "Fermitools-Conda"]
+def projects = ["ScienceTools", "GlastRelease", "Fermitools-conda"]
 def projectsToBuild = []
 
 def integrationRefs = ["master", "L1"]
