@@ -148,20 +148,24 @@ try {
 
             stage('Compile and Test') {
               echo "Starting scons build"
-              sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                  -C ${project} \
-                  --site-dir=../SConsShared/site_scons \
-                  --with-GLAST-EXT=${glast_ext}\
-                  --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen" \
-                  all
+              sh """
+                /afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
+                    -j 5 \
+                    -C ${project} \
+                    --site-dir=../SConsShared/site_scons \
+                    --with-GLAST-EXT=${glast_ext}\
+                    --doxygen="doxhtml" \
+                    doxygen
+                find SConsShared/Doxygen -name "*.config" -exec doxygen {} \;
+                mv doxhtml/* /nfs/farm/g/glast/software/www/docs/doxygen
+                ls -lah /nfs/farm/g/glast/software/www/docs/doxygen
               """
-              echo "Done building Doxygen"
-              sh "ls -lah /nfs/farm/g/glast/software/www/docs/doxygen"
             }
         }
     }
 
     parallel builders
+    def builders = [:]
 
     // Execute deploy on glast node (NFS access)
     node ('glast') {
