@@ -139,7 +139,7 @@ try {
         node('fermi-build01') {
 
             stage('Initialize Workspace') {
-              deleteDir()
+              sh "rm -rf *"
               sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
               echo "Done Repoman Checkout"
             }
