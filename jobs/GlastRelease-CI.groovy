@@ -156,10 +156,10 @@ try {
                     --with-GLAST-EXT=${glast_ext}\
                     --doxygen="doxhtml" \
                     doxygen
-                find SConsShared/Doxygen -name "*.config" -exec doxygen {} \;
-                mv doxhtml/* /nfs/farm/g/glast/software/www/docs/doxygen
-                ls -lah /nfs/farm/g/glast/software/www/docs/doxygen
-              """
+                """
+                sh 'find SConsShared/Doxygen -name "*.config" -exec doxygen {} \\;'
+                sh "mv doxhtml/* /nfs/farm/g/glast/software/www/docs/doxygen"
+                sh "ls -lah /nfs/farm/g/glast/software/www/docs/doxygen"
             }
         }
     }
