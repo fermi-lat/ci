@@ -40,7 +40,7 @@ if (params.description){
 try {
     notifyBuild('STARTED')
 
-    def variants = ['rhel6-x86_64-64bit-gcc44']
+    def variants = ['rhel6-x86_64-64bit-gcc44'] // Doxygen variant run separately
 
     def images = [
         "rhel6-x86_64-64bit-gcc44":'fermilat/base:centos6-py27-gcc44',
@@ -132,25 +132,28 @@ try {
                     }
                 }
             }
+        }
+    }
 
-            node('fermi-build01') {
+    builders['Doxygen'] = {
+        node('fermi-build01') {
 
-              stage('Initialize Workspace'){
-                sh 'rm -rf *'
-                sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
-              }
-              stage('Compile Documentation'){
-                sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
-                    -C ${project} \
-                    --site-dir=../SConsShared/site_scons \
-                    --with-GLAST-EXT=${glast_ext}\
-                    --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen"
-                """
-              }
+            stage('Initialize Workspace'){
+              sh 'rm -rf *'
+              sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
+            }
 
+            stage('Compile Documentation'){
+              sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
+                  -C ${project} \
+                  --site-dir=../SConsShared/site_scons \
+                  --with-GLAST-EXT=${glast_ext}\
+                  --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen"
+              """
             }
         }
     }
+
     parallel builders
 
     // Execute deploy on glast node (NFS access)
