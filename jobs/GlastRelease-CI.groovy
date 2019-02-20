@@ -143,11 +143,10 @@ try {
             stage('Initialize Workspace') {
               sh "rm -rf *"
               sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
-              echo "Done Repoman Checkout"
+              sh "mkdir doxhtml"
             }
 
             stage('Compile and Test') {
-              echo "Starting scons build"
               sh """
                 /afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
                     -j 5 \
@@ -158,7 +157,7 @@ try {
                     doxygen
                 """
                 sh 'find SConsShared/Doxygen -name "*.config" -exec doxygen {} \\;'
-                sh "mv doxhtml/* /nfs/farm/g/glast/software/www/docs/doxygen"
+                sh "mv doxhtml /nfs/farm/g/glast/software/www/docs/doxygen"
                 sh "ls -lah /nfs/farm/g/glast/software/www/docs/doxygen"
             }
         }
