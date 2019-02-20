@@ -165,7 +165,7 @@ try {
     }
 
     parallel builders
-    def builders = [:]
+    builders = [:]
 
     // Execute deploy on glast node (NFS access)
     node ('glast') {
