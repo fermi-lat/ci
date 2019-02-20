@@ -54,7 +54,7 @@ try {
                 deleteDir()
                 docker.image(images[variant]).inside {
                     stage('Initialize Workspace') {
-                        
+
                         // Setup system things so that we play nice with SSH and pip
                         if(!fileExists("/home/centos/.local/lib64")){
                             sh "mkdir -p /home/centos/.local/lib"
@@ -78,11 +78,11 @@ try {
                             def git_tag = sh(returnStdout: true, script: "cd ${project} && git describe --exact-match --tags HEAD").trim()
                             assert git_tag == release_tag
                         }
-                
+
                         // Setup externals (needs scons internally)
                         sh "bash GlastRelease/bootstrap_externals.sh ${WORKSPACE}/externals"
                     }
-                    
+
                     stage('Compile and Test') {
                         def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${variant}"
                         sh """scons -j 5 \
@@ -90,7 +90,7 @@ try {
                                   --site-dir=../SConsShared/site_scons \
                                   --compile-opt --compile-debug --variant="NONE" \
                                   --with-GLAST-EXT=${WORKSPACE}/externals"""
-    
+
                         // Make developer tarball (no container directory)
                         sh """scons \
                                   -C ${project} \
@@ -112,7 +112,7 @@ try {
                             mv xml ${artifact_name}/xml
                             tar czf ${artifact_name}.tar.gz ${artifact_name}
                         """
-                        
+
                         // Make release tarball (rename directory)
                         if (is_release) {
                             sh """
@@ -122,7 +122,7 @@ try {
                                 tar czf ${release_tag}.tar.gz ${release_tag}
                             """
                         }
-                        
+
                         archiveArtifacts "${artifact_name}.tar.gz"
                         if (is_release) {
                             archiveArtifacts "${variant}/${release_tag}.tar.gz"
@@ -132,19 +132,36 @@ try {
                     }
                 }
             }
+
+            node('fermi-build01') {
+
+              stage('Initialize Workspace'){
+                sh 'rm -rf *'
+                sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
+              }
+              stage('Compile Documentation'){
+                sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
+                    -C ${project} \
+                    --site-dir=../SConsShared/site_scons \
+                    --with-GLAST-EXT=${glast_ext}\
+                    --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen"
+                """
+              }
+
+            }
         }
     }
     parallel builders
-    
+
     // Execute deploy on glast node (NFS access)
     node ('glast') {
-    
+
         stage('validate') {
             echo "[Validation]"
         }
-    
+
         for (x in variants) {
-	    // Need to bind the label variable before the closure - can't do 'for (label in labels)'
+            // Need to bind the label variable before the closure - can't do 'for (label in labels)'
             def variant = x
             builders[variant] = {
                 stage('deploy') {
