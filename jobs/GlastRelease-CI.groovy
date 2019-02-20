@@ -45,6 +45,8 @@ try {
     def images = [
         "rhel6-x86_64-64bit-gcc44":'fermilat/base:centos6-py27-gcc44',
     ]
+    def os_arch_compiler = "redhat6-x86_64-64bit-gcc44"
+    def glast_ext = "/afs/slac/g/glast/ground/GLAST_EXT/${os_arch_compiler}"
 
     def builders = [:]
     for (x in variants) {
@@ -150,7 +152,7 @@ try {
                   -C ${project} \
                   --site-dir=../SConsShared/site_scons \
                   --with-GLAST-EXT=${glast_ext}\
-                  --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen"
+                  --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen" \
                   all
               """
               echo "Done building Doxygen"
