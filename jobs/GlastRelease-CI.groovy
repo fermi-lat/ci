@@ -138,18 +138,23 @@ try {
     builders['Doxygen'] = {
         node('fermi-build01') {
 
-            stage('Initialize Workspace'){
-              sh 'rm -rf *'
+            stage('Initialize Workspace') {
+              deleteDir()
               sh "source /scratch/bvan/repoman-env/bin/activate && repoman checkout --force --develop ${project} ${repoman_ref}"
+              echo "Done Repoman Checkout"
             }
 
-            stage('Compile Documentation'){
+            stage('Compile and Test') {
+              echo "Starting scons build"
               sh """/afs/slac/g/glast/applications/SCons/2.1.0/bin/scons \
                   -C ${project} \
                   --site-dir=../SConsShared/site_scons \
                   --with-GLAST-EXT=${glast_ext}\
                   --doxygen="/nfs/farm/g/glast/software/www/docs/doxygen"
+                  all
               """
+              echo "Done building Doxygen"
+              sh "ls -lah /nfs/farm/g/glast/software/www/docs/doxygen"
             }
         }
     }
