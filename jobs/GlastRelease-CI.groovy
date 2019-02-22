@@ -156,8 +156,8 @@ try {
                     --doxygen="doxhtml" \
                     doxygen
                 """
-                sh 'find SConsShared/Doxygen -name "*.config" -print0 | xargs -0 -n 1 -P 4 doxygen'
-                // sh 'find SConsShared/Doxygen -name "*.config" -exec doxygen {} \\;'
+                // sh 'find SConsShared/Doxygen -name "*.config" -print0 | xargs -0 -n 1 -P 4 doxygen'
+                sh 'find SConsShared/Doxygen -name "*.config" -exec doxygen {} \\;'
                 sh "rsync -avh doxhtml/* /nfs/farm/g/glast/software/www/docs/doxygen/."
                 sh "ls -lah /nfs/farm/g/glast/software/www/docs/doxygen"
             }
