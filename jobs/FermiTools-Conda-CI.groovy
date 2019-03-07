@@ -42,7 +42,8 @@ try {
       }
 
       stage('Compile - Conda build'){
-        sh 'scl enable devtoolset-2 "conda build -c conda-forge -c fermi Fermitools-conda"'
+        //sh 'scl enable devtoolset-2 "conda build -c conda-forge -c fermi Fermitools-conda"'
+        conda build -c conda-forge/label/cf201901 -c fermi Fermitools-conda
       }
 
       stage('Test - fermitools-test-scripts'){
