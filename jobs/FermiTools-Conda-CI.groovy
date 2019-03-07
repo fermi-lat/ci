@@ -47,7 +47,7 @@ try {
       }
 
       stage('Test - fermitools-test-scripts'){
-        sh '/bin/bash -c "conda create -n fermi -c conda-forge -c fermi --use-local fermitools fermitools-test-scripts -y"'
+        sh '/bin/bash -c "conda create -n fermi -c conda-forge/label/cf201901 -c fermi --use-local fermitools fermitools-test-scripts -y"'
 
         try { sh '/bin/bash -c "source activate fermi && ST-pulsar-test"' }
         catch (e) {currentBuild.result = "TEST_FAILURE"}
