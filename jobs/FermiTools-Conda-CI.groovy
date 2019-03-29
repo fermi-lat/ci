@@ -62,7 +62,7 @@ try {
 
       stage('Deploy to Anaconda Cloud'){
         withCredentials([string(credentialsId: 'anaconda-fermi-token', variable: 'ANACONDA_TOKEN')]) {
-          sh "anaconda -v -t ${ANACONDA_TOKEN} upload -l alpha -u fermi /miniconda/conda-bld/linux-64/fermitools*.tar.bz2"
+          sh "anaconda -v -t ${ANACONDA_TOKEN} upload -l dev -u fermi /miniconda/conda-bld/linux-64/fermitools*.tar.bz2"
         }
       }
     }
