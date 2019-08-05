@@ -24,7 +24,14 @@ if (params.description){
 try {
   notifyBuild('STARTED')
 
-
+  def post = new URL("https://dev.azure.com/FermiSpaceTelescope/Fermitools/_apis/build/builds?api-version=5.0")
+  def message = "{"definition": { "id": 30 }}"
+  post.setRequestMethod("POST")
+  post.setDoOutput(true)
+  post.setRequestProperty("Content-Type", "application/json")
+  post.getOutputStream().write(message.getBytes("UTF-8"));
+  def postRC = post.getResponseCode(); 
+     
   def blessed = 'glast'
   def labels = ['fermi-build01']
   //def labels = ['fermi-build01', 'lsst-build01', 'srs-build01']
