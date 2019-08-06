@@ -1,0 +1,37 @@
+variables:
+- group: DevOps Access Keys
+- name: repo
+  value: tip
+  
+parameters:
+  repo: ''
+  
+jobs:
+- job: buildRepo
+  displayName: 'Compile Package'
+  timeoutInMinutes: 150
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  # Manually adding conda to the PATH is a step required by Microsoft
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: 'Add conda to PATH'
+  - task: CondaEnvironment@0
+    inputs:
+      environmentName: 'Build'
+      packageSpecs: 'python=2.7'
+  - bash: |
+      conda install --yes --quiet -c conda-forge/label/cf201901 -c fermi fermi-repoman scons swig
+      conda install --yes --quiet --only-deps -c conda-forge/label/cf201901 -c fermi fermitools
+    displayName: 'Setup Build environment'
+  - bash: |
+      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
+      rm -rf ${{ parameters.repo }}
+      git clone https://github.com/fermi-lat/${{ parameters.repo }}
+    displayName: 'Clone Repository'
+  - bash: |
+      mkdir -p ${CONDA_PREFIX}/include/fftw
+      ln -s ${CONDA_PREFIX}/include/fftw3.* ${CONDA_PREFIX}/include/fftw
+    displayName: 'FFTW relinking'
+  - bash: scons -C ScienceTools --site-dir=../SConsShared/site_scons --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2" --cxxflags="-O2 -std=c++11" --conda=$CONDA_PREFIX ${{ parameters.repo }}
+    displayName: 'Compile Package'
