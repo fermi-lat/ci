@@ -1,10 +1,16 @@
 parameters:
   repo: ''
   
+variables:
+  - name: vmimage
+    value: 'ubuntu-16.04'
+
 jobs:
 - job: buildRepoLinux
   displayName: 'Compile Package - Linux'
   timeoutInMinutes: 150
+  pool:
+    vmImage: $(vmimage)
   steps:
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
