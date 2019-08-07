@@ -41,13 +41,14 @@ jobs:
   - bash: |
       cd ../fermitools-conda
       echo Patch is $(patch)
-      grep -i 'set version' meta.yaml | awk '{ gsub($5,"\"$(version).$(revision).$(patch)\"",$5); print $5}'
+      sed -i 's/$(version).$(revision).$(oldpatch)/$(version).$(revision).$(patch)/g' meta.yaml
     displayName: 'Update Patch Number in Fermitools-Conda meta.yaml'
   - bash: |
-      echo Commit is $(commit)
-      echo Author is $(author)
-      echo Message is $(message)
+      cd ../fermitools-conda
+      git config --global user.email "joseph.a.asercion@nasa.gov"
+      git config --global user.name "jasercion"
       git config --global credential.helper store
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
-      git commit -m "Patch iteration triggered by ${{ parameters.repo }} repository." -m "Trigger: $(commit) \n Author: $(author) \n Message: $(message)" meta.yaml
+      git commit -m "Patch iteration triggered by $(repo) repository." -m "Trigger: $(commit)   Author: $(author)   Message: $(message)" meta.yaml
       git push
+     displayName: 'Push change to Fermitools-conda repository
