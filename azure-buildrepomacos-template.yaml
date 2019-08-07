@@ -1,6 +1,7 @@
 parameters:
   repo: ''
 
+jobs:
 - job: buildRepoMacos
   displayName: 'Compile Package - MacOS'
   timeoutInMinutes: 150
