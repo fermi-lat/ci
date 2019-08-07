@@ -31,8 +31,8 @@ jobs:
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
-      mkdir -p ${CONDA_PREFIX}/include/fftw
-      ln -s ${CONDA_PREFIX}/include/fftw3.* ${CONDA_PREFIX}/include/fftw
+      mkdir -p $(CONDA_PREFIX)/include/fftw
+      ln -s $(CONDA_PREFIX)/include/fftw3.* ${CONDA_PREFIX}/include/fftw
     displayName: 'FFTW relinking'
-  - bash: scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$CONDA_PREFIX --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2" --cxxflags="-O2 -std=c++11" --ldflags="-Wl,-fopenmp,-rpath,$CONDA_PREFIX/lib,-rpath,$CONDA_PREFIX/lib/root,-rpath,$CONDA_PREFIX/lib" --conda=$CONDA_PREFIX ${{ parameters.repo }}
+  - bash: scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2" --cxxflags="-O2 -std=c++11" --ldflags="-Wl,-fopenmp,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$CONDA_PREFIX/lib" --conda=$(CONDA_PREFIX) ${{ parameters.repo }}
     displayName: 'Compile Package'    
