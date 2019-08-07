@@ -19,10 +19,14 @@ jobs:
       value:
     - name: message
       value:
+    - name: branch
+      value:
   steps:
+  - bash: echo "##vso[task.setvariable variable=branch]$(git branch | awk '{ print $2 }')"
+    displayName: 'Query repository branch'
   - bash: |
-      cd ../
-      git clone https://github.com/fermi-lat/fermitools-conda
+      cd ../ 
+      git clone -b $(branch) https://github.com/fermi-lat/fermitools-conda
     displayName: 'Clone Fermitools-conda repository'
   - bash: |
       echo "##vso[task.setvariable variable=commit]$(git log -1 | head -1 | tr -d '\012\015')"
