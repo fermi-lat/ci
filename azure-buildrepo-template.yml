@@ -6,9 +6,7 @@ jobs:
 - job: buildRepoLinux
   displayName: 'Compile Package - Linux'
   timeoutInMinutes: 150
-  condition: eq('${{ parameters.vmimage }}', 'ubuntu-16.04')
-  pool:
-    vmImage: ${{ parameters.vmimage }}
+  condition: eq(variables['Agent.OS'], 'Linux')
   steps:
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
@@ -36,9 +34,7 @@ jobs:
 - job: buildRepoMacos
   displayName: 'Compile Package - MacOS'
   timeoutInMinutes: 150
-  condition: eq('${{ parameters.vmimage }}', 'macOS-10.13')
-  pool:
-    vmImage: ${{ parameters.vmimage }}
+  condition: eq(variables['Agent.OS'], 'Darwin')
   steps:
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
