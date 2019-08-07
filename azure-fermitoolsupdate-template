@@ -11,6 +11,8 @@ jobs:
       value:
     - name: patch
       value:
+    - name: oldpatch
+      value:
     - name: commit
       value:
     - name: author
@@ -36,6 +38,7 @@ jobs:
   - bash: |
       cd ../fermitools-conda
       echo Patch is $(patch)
+      echo "##vso[task.setvariable variable=oldpatch]$(patch)"
       echo "##vso[task.setvariable variable=patch]$(expr $(patch) + 1)"
     displayName: 'Iterate Patch Number'
   - bash: |
@@ -49,6 +52,6 @@ jobs:
       git config --global user.name "jasercion"
       git config --global credential.helper store
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
-      git commit -m "Patch iteration triggered by $(repo) repository." -m "Trigger: $(commit)   Author: $(author)   Message: $(message)" meta.yaml
+      git commit -m "Patch iteration triggered by ${{ parameters.repo }} repository." -m "Trigger: $(commit)   Author: $(author)   Message: $(message)" meta.yaml
       git push
      displayName: 'Push change to Fermitools-conda repository
