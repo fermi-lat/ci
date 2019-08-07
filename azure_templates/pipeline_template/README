@@ -1,0 +1,16 @@
+####################################
+##        PIPELINE TEMPLATE       ##
+##      Author: Joe Asercion      ##
+##   joseph.a.asercion@nasa.gov   ##
+####################################
+
+To deploy in a Fermi-lat organization repository, take the following steps:
+
+1. Clone the repository
+2. Copy the azure-pipelines.yml file found in the same directory as this README into the repository's top level directory
+3. Open the copied azure-pipelines.yml file and set the 'value' key in the 'variables' section to the name of the repository you are setting the pipeline up for.
+4. Add the file to the git repository and push the change to github
+5. Navigate to FermiSpaceTelescope/Fermitools/Pipelines in Azure DevOps and click 'New Pipeline'
+6. Select GitHub as the location of the code
+7. Select the repository you wish to create a pipeline for.  Note: You may have to set the drop down menu to 'All Repositories' as opposed to 'My repositories'
+8. Azure should detect the already existing pipeline configuration file.  Review the file then click 'Save and Run'
