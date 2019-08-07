@@ -31,7 +31,7 @@ jobs:
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda $(branch)
       rm -rf ${{ parameters.repo }}
-      git clone https://github.com/fermi-lat/${{ parameters.repo }}
+      git clone -b $(branch) https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
       mkdir -p ${CONDA_PREFIX}/include/fftw
