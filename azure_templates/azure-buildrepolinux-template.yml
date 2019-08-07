@@ -8,7 +8,12 @@ jobs:
   timeoutInMinutes: 150
   pool:
     vmImage: 'ubuntu-16.04'
+  variables:
+    - name: branch
+      value: 
   steps:
+  - bash: echo "##vso[task.setvariable variable=branch]$(git branch | awk '{ print $2 }')"
+    displayName: 'Query repository branch'
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: 'Add conda to PATH'
@@ -21,9 +26,9 @@ jobs:
       conda install --yes --quiet --only-deps -c conda-forge/label/cf201901 -c fermi fermitools
     displayName: 'Setup Build environment'
   - bash: |
-      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
+      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda $(branch)
       rm -rf ${{ parameters.repo }}
-      git clone https://github.com/fermi-lat/${{ parameters.repo }}
+      git clone -b $(branch) https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
       mkdir -p ${CONDA_PREFIX}/include/fftw
