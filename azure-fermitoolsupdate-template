@@ -1,8 +1,3 @@
-variables:
-- group: DevOps Access Keys
-- name: repo
-  value: tip
-  
 parameters:
   repo: ''
 
