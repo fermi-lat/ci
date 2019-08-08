@@ -47,5 +47,4 @@ jobs:
     displayName: 'FFTW relinking'
   - bash: |
       scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2 $(CFLAGS)" --cxxflags="-O2 -std=c++11 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$(CONDA_PREFIX)/lib,-gomp" ${{ parameters.repo }}
-      ls /home/vsts/work/1/s/lib/debianstretch/sid-x86_64-64bit-gcc48/
     displayName: 'Compile Package'
