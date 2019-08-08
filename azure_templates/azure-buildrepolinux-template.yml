@@ -46,5 +46,5 @@ jobs:
       ln -s $(CONDA_PREFIX)/include/fftw3.* $(CONDA_PREFIX)/include/fftw
     displayName: 'FFTW relinking'
   - bash: |
-      scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2 $(CFLAGS)" --cxxflags="-O2 -std=c++11 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -std=c++11,-openmp,-Wl,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$(CONDA_PREFIX)/lib" ${{ parameters.repo }}
+      scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2 $(CFLAGS)" --cxxflags="-O2 -std=c++11 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$(CONDA_PREFIX)/lib, -openmp" ${{ parameters.repo }}
     displayName: 'Compile Package'
