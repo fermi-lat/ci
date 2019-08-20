@@ -54,7 +54,7 @@ jobs:
           then
             echo "Updating $f..."
             cd $f
-            sed -i 's/value:/value: $f' azure-pipelines.yml
+            sed -i 's/value:/value: $f/g' azure-pipelines.yml
             git commit -m "Propagate Azure Pipeline Template Changes" azure-pipelines.yml
             git push
             cd ../
