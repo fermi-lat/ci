@@ -51,6 +51,7 @@ jobs:
       git config --global user.name "jasercion"
       git config --global credential.helper store
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
+      ls
       for f in *; do
           if [ $f != "ci" ]
           then
