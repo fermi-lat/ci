@@ -43,6 +43,8 @@ jobs:
   # Checkout all Fermitools repositories.  
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
+      rm -rf *
+      git clone https://github.com/fermi-lat/st_graph
       git clone https://github.com/fermi-lat/ci
     displayName: 'Clone repositories'
   # Update all pipeline config files except for ci
@@ -56,7 +58,8 @@ jobs:
           then
             echo "Updating $f..."
             cd $f
-            sed -i 's/value:/value: $f/g' azure-pipelines.yml
+            cp ../ci/azure_templates/pipeline_template/azure-pipelines.yml .
+            sed -i 's/value:/value: $(f)/g' azure-pipelines.yml
             git commit -m "Propagate Azure Pipeline Template Changes" azure-pipelines.yml
             git push
             cd ../
