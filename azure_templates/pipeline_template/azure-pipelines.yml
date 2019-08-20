@@ -39,14 +39,14 @@ stages:
       repo: '$(repo)'
       
    ### Linux Test Stage ###
- - stage: linux_test_stage
-   displayName: 'Testing package on Ubuntu'
-   dependsOn: linux_build_stage
-   condition: succeeded('linux_build_stage')
-   jobs:
-   - template: azure_templates/azure-testrepolinux-template.yml@ci
-     parameters:
-       repo: '$(repo)'
+- stage: linux_test_stage
+  displayName: 'Testing package on Ubuntu'
+  dependsOn: linux_build_stage
+  condition: succeeded('linux_build_stage')
+  jobs:
+  - template: azure_templates/azure-testrepolinux-template.yml@ci
+    parameters:
+      repo: '$(repo)'
        
 #####################################
 
@@ -65,14 +65,14 @@ stages:
       repo: '$(repo)'
    
    ### MacOS Test Stage ###
- - stage: macos_test_stage
-   displayName: 'Testing package on MacOS'
-   dependsOn: macos_build_stage
-   condition: succeeded('macos_build_stage')
-   jobs:
-   - template: azure_templates/azure-testrepomacos-template.yml@ci
-     parameters:
-       repo: '$(repo)'
+- stage: macos_test_stage
+  displayName: 'Testing package on MacOS'
+  dependsOn: macos_build_stage
+  condition: succeeded('macos_build_stage')
+  jobs:
+  - template: azure_templates/azure-testrepomacos-template.yml@ci
+    parameters:
+      repo: '$(repo)'
        
 #####################################
 
