@@ -1,0 +1,44 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include: 
+    - azure_templates/pipeline_template/azure-pipelines.yml
+    exclude:
+    - jobs/*
+    - README.md
+    - azure_templates/pipeline_template/README
+    - azure_templates/azure-buildrepolinux-template.yml
+    - azure_templates/azure-buildrepomacos-template.yml
+    - azure_templates/azure-fermitoolsupdate-template.yml
+    - azure_templates/azure-testrepolinux-template.yml
+    - azure_templates/azure-testrepomacos-template.yml
+
+jobs:
+
+#####################
+# Propagate Changes #
+#####################
+
+  ### Setup Environment ###
+- job: setupenvironment
+  displayName: 'Setup working environment'
+  steps:
+  # Manually adding conda to the PATH is a step required by Microsoft
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: 'Add conda to PATH'
+  - task: CondaEnvironment@0
+    inputs:
+      environmentName: 'Env'
+      packageSpecs: 'python=2.7'
+  - bash: |
+      cd ../
+      conda install --yes --quiet -c conda-forge/label/cf201901 -c fermi fermi-repoman
+    displayName: 'Install Repoman'
+  - bash: |
+      cd ../
+      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
+      rm -rf ci
+      git clone https://github.com/fermi-lat/ci
+    displayName: 'Clone repositories'
