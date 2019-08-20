@@ -1,0 +1,11 @@
+parameters:
+  repo: ''
+
+jobs:
+- job: fermitoolstestbuild
+  displayName: 'Update Fermitools-Conda Metadata'
+  
+  steps:
+  - bash: |
+      echo 'Placeholder for running $(repo) tests on MacOS'
+    displayName: 'Test Repo'
