@@ -43,8 +43,6 @@ jobs:
   # Checkout all Fermitools repositories.  
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
-      rm -rf *
-      git clone https://github.com/fermi-lat/st_graph
       git clone https://github.com/fermi-lat/ci
     displayName: 'Clone repositories'
   # Update all pipeline config files except for ci
