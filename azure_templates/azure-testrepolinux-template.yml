@@ -7,5 +7,5 @@ jobs:
   
   steps:
   - bash: |
-      echo "Placeholder for running $(repo) tests on Linux
+      echo 'Placeholder for running $(repo) tests on Linux'
     displayName: 'Test Repo'
