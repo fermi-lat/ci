@@ -90,5 +90,3 @@ stages:
   - template: azure_templates/azure-fermitoolsupdate-template.yml@ci
     parameters:
       repo: '$(repo)'
-
-#Add test comment for testing purposes
