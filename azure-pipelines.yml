@@ -50,7 +50,7 @@ jobs:
       git config --global credential.helper store
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
       for f in *; do
-          if [ $f -ne "ci" ]
+          if [ $f != "ci" ]
           then
             echo "Updating $f..."
             cd $f
