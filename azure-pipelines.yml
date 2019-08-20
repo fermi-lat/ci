@@ -25,25 +25,27 @@ jobs:
 #####################
 
   ### Setup Environment ###
-- job: setupenvironment
-  displayName: 'Setup working environment'
+- job: propagatechanges
+  displayName: 'Propagate template changes to all repositories'
   steps:
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: 'Add conda to PATH'
+  # Putting everything in its own conda environment makes things work smoother
   - task: CondaEnvironment@0
     inputs:
       environmentName: 'Env'
       packageSpecs: 'python=2.7'
+  # Install Repoman
   - bash: |
       conda install --yes --quiet -c conda-forge/label/cf201901 -c fermi fermi-repoman
     displayName: 'Install Repoman'
+  # Checkout all Fermitools repositories.  
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
-      rm -rf *
       git clone https://github.com/fermi-lat/ci
-      git clone https://github.com/fermi-lat/st_graph
     displayName: 'Clone repositories'
+  # Update all pipeline config files except for ci
   - bash: |
       git config --global user.email "joseph.a.asercion@nasa.gov"
       git config --global user.name "jasercion"
@@ -60,4 +62,4 @@ jobs:
             cd ../
           fi
       done
-    displayName: "Updating Templates"
+    displayName: "Propagate Template Changes"
