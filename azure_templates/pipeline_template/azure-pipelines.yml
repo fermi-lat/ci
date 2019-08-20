@@ -83,8 +83,8 @@ stages:
 - stage: pipeline_launch_stage
   displayName: 'Launch Fermitools CI Pipeline'
   dependsOn:
-  - linux_build_stage
-  - macos_build_stage
+  - linux_test_stage
+  - macos_test_stage
   condition: and(succeeded('linux_test_stage'), succeeded('macos_test_stage'))
   jobs:
   - template: azure_templates/azure-fermitoolsupdate-template.yml@ci
