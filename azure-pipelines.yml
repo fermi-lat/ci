@@ -42,6 +42,7 @@ jobs:
     displayName: 'Install Repoman'
   # Checkout all Fermitools repositories.  
   - bash: |
+      rm -rf *
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
       git clone https://github.com/fermi-lat/ci
     displayName: 'Clone repositories'
@@ -53,7 +54,7 @@ jobs:
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
       ls
       for f in *; do
-          if [ $f != "ci" ]
+          if [ $f != "ci" ] && [ $f != "ScienceTools" ] && [ $f != "STRcontainerSettings"] && [ $f != "SConsShared"]
           then
             echo "Updating $f..."
             cd $f
