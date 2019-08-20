@@ -15,6 +15,9 @@ trigger:
     - azure_templates/azure-testrepolinux-template.yml
     - azure_templates/azure-testrepomacos-template.yml
 
+variables:
+- group: DevOps Access Keys
+
 jobs:
 
 #####################
@@ -39,6 +42,25 @@ jobs:
   - bash: |
       cd ../
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
-      rm -rf ci
+      rm -rf *
       git clone https://github.com/fermi-lat/ci
+      git clone https://github.com/fermi-lat/st_graph
     displayName: 'Clone repositories'
+  - bash: |
+      git config --global user.email "joseph.a.asercion@nasa.gov"
+      git config --global user.name "jasercion"
+      git config --global credential.helper store
+      echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
+      cd ../
+      for f in *; do
+          if [ $f -ne "ci" ]
+          then
+            echo "Updating $f..."
+            cd $f
+            sed -i 's/value:/value: $f' azure-pipelines.yml
+            git commit -m "Propagate Azure Pipeline Template Changes" azure-pipelines.yml
+            git push
+            cd ../
+          fi
+      done
+    displayName: "Updating Templates"
