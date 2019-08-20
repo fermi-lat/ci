@@ -37,6 +37,17 @@ stages:
   - template: azure-buildrepolinux-template.yml@ci
     parameters:
       repo: '$(repo)'
+      
+   ### Linux Test Stage ###
+ - stage: linux_test_stage
+   displayName: 'Testing package on Ubuntu'
+   dependsOn: linux_build_stage
+   condition: succeeded('linux_build_stage')
+   jobs:
+   - template: azure-testrepolinux-template.yml@ci
+     parameters:
+       repo: '$(repo)'
+       
 #####################################
 
 #####################################
@@ -52,6 +63,17 @@ stages:
   - template: azure-buildrepomacos-template.yml@ci
     parameters:
       repo: '$(repo)'
+   
+   ### MacOS Test Stage ###
+ - stage: macos_test_stage
+   displayName: 'Testing package on MacOS'
+   dependsOn: macos_build_stage
+   condition: succeeded('macos_build_stage')
+   jobs:
+   - template: azure-testrepomacos-template.yml@ci
+     parameters:
+       repo: '$(repo)'
+       
 #####################################
 
 #####################################
@@ -63,7 +85,7 @@ stages:
   dependsOn:
   - linux_build_stage
   - macos_build_stage
-  condition: and(succeeded('linux_build_stage'), succeeded('macos_build_stage'))
+  condition: and(succeeded('linux_test_stage'), succeeded('macos_test_stage'))
   jobs:
   - template: azure-fermitoolsupdate-template.yml@ci
     parameters:
