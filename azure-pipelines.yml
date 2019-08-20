@@ -60,6 +60,7 @@ jobs:
             cd $f
             cp ../ci/azure_templates/pipeline_template/azure-pipelines.yml .
             sed -i "s/value:/value: ${f}/g" azure-pipelines.yml
+            git add *
             git commit -m "Propagate Azure Pipeline Template Changes" azure-pipelines.yml
             git push
             cd ../
