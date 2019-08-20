@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: fermitoolstestbuild
-  displayName: 'Update Fermitools-Conda Metadata'
+  displayName: 'Run $(repo) tests on MacOS'
   timeoutInMinutes: 150
   pool:
     vmImage: 'macOS-10.13'
