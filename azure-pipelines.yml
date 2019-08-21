@@ -53,8 +53,7 @@ jobs:
       git config --global credential.helper store
       echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
       for f in *; do
-          if [[ $f != "ci" && $f != "ScienceTools" && $f != "STRcontainerSettings" && $f != "SConsShared"]]
-           then
+          if [[ $f != "ci" && $f != "ScienceTools" && $f != "STRcontainerSettings" && $f != "SConsShared" ]]; then
             echo "Updating $f..."
             cd $f
             cp ../ci/azure_templates/pipeline_template/azure-pipelines.yml .
