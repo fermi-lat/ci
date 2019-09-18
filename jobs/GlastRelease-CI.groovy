@@ -70,7 +70,13 @@ try {
 
                         def develop_opt = develop ? "--develop" : ""
                         // Update the source code
+<<<<<<< HEAD
                         sh "pip install scons fermi-repoman"
+||||||| 4aaafef... Hard-code numpy version
+                        sh "pip install scons fermi-repoman numpy==1.16.5"
+=======
+                        sh "pip install scons fermi-repoman numpy"
+>>>>>>> parent of 4aaafef... Hard-code numpy version
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
                             sh "repoman checkout ${project} ${develop_opt} ${repoman_ref}"
                         }
