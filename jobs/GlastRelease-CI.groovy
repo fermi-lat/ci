@@ -68,7 +68,7 @@ try {
 
                         def develop_opt = develop ? "--develop" : ""
                         // Update the source code
-                        sh "pip install scons fermi-repoman numpy"
+                        sh "pip install gitpython<2 scons fermi-repoman numpy"
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
                             sh "repoman checkout ${project} ${develop_opt} ${repoman_ref}"
                         }
