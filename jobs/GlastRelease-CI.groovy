@@ -7,14 +7,14 @@ properties([
          description: 'Branch, Ref or Commit to build'
        ),
        booleanParam(
-         name: 'develop',
+         name: 'develop_flag',
          defaultValue: false,
          description: 'Perform builds against development branches (master)'
        ),
        booleanParam(
          name: 'release',
          defaultValue: false,
-         description: "Perform a release (can't be executed with `develop`)"
+         description: "Perform a release (can't be executed with `develop_flag`)"
        )
      ])
    ])
@@ -66,7 +66,10 @@ try {
                         sh "tar xzf GlastRelease.src.tar.gz"
                         sh "mv src/* . && rmdir src && rm GlastRelease.src.tar.gz"
 
-                        def develop_opt = develop ? "--develop" : ""
+                        def develop_opt = ''
+                        if (develop_flag) {
+                          develop_opt = '--develop'
+                        } 
                         // Update the source code
                         sh "pip install gitpython==2.1.14 scons fermi-repoman numpy==1.16.4"
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
