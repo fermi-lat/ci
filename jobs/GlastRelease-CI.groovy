@@ -67,7 +67,7 @@ try {
                         sh "mv src/* . && rmdir src && rm GlastRelease.src.tar.gz"
 
                         // Update the source code
-                        sh "pip install gitpython==2.1.14 scons fermi-repoman numpy==1.16.4"
+                        sh "pip install scons fermi-repoman numpy"
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
                             sh "repoman checkout ${project} ${repoman_ref}"
                         }
