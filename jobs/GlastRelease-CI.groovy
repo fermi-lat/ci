@@ -7,14 +7,14 @@ properties([
          description: 'Branch, Ref or Commit to build'
        ),
        booleanParam(
-         name: 'develop',
-         defaultValue: true,
+         name: 'develop_flag',
+         defaultValue: false,
          description: 'Perform builds against development branches (master)'
        ),
        booleanParam(
          name: 'release',
          defaultValue: false,
-         description: "Perform a release (can't be executed with `develop`)"
+         description: "Perform a release (can't be executed with `develop_flag`)"
        )
      ])
    ])
@@ -54,7 +54,7 @@ try {
                 deleteDir()
                 docker.image(images[variant]).inside {
                     stage('Initialize Workspace') {
-                        
+
                         // Setup system things so that we play nice with SSH and pip
                         if(!fileExists("/home/centos/.local/lib64")){
                             sh "mkdir -p /home/centos/.local/lib"
@@ -66,11 +66,10 @@ try {
                         sh "tar xzf GlastRelease.src.tar.gz"
                         sh "mv src/* . && rmdir src && rm GlastRelease.src.tar.gz"
 
-                        def develop_opt = develop ? "--develop" : ""
                         // Update the source code
                         sh "pip install scons fermi-repoman numpy"
                         sshagent (credentials: ['glast.slac.stanford.edu']) {
-                            sh "repoman checkout ${project} ${develop_opt} ${repoman_ref}"
+                            sh "repoman checkout ${project} ${repoman_ref}"
                         }
 
                         // Verify everything is in order if this looks like a release
@@ -78,11 +77,11 @@ try {
                             def git_tag = sh(returnStdout: true, script: "cd ${project} && git describe --exact-match --tags HEAD").trim()
                             assert git_tag == release_tag
                         }
-                
+
                         // Setup externals (needs scons internally)
                         sh "bash GlastRelease/bootstrap_externals.sh ${WORKSPACE}/externals"
                     }
-                    
+
                     stage('Compile and Test') {
                         def artifact_name = "${JOB_BASE_NAME}-${BUILD_NUMBER}-${variant}"
                         sh """scons -j 5 \
@@ -90,7 +89,7 @@ try {
                                   --site-dir=../SConsShared/site_scons \
                                   --compile-opt --compile-debug --variant="NONE" \
                                   --with-GLAST-EXT=${WORKSPACE}/externals"""
-    
+
                         // Make developer tarball (no container directory)
                         sh """scons \
                                   -C ${project} \
@@ -112,7 +111,7 @@ try {
                             mv xml ${artifact_name}/xml
                             tar czf ${artifact_name}.tar.gz ${artifact_name}
                         """
-                        
+
                         // Make release tarball (rename directory)
                         if (is_release) {
                             sh """
@@ -122,7 +121,7 @@ try {
                                 tar czf ${release_tag}.tar.gz ${release_tag}
                             """
                         }
-                        
+
                         archiveArtifacts "${artifact_name}.tar.gz"
                         if (is_release) {
                             archiveArtifacts "${variant}/${release_tag}.tar.gz"
@@ -135,14 +134,14 @@ try {
         }
     }
     parallel builders
-    
+
     // Execute deploy on glast node (NFS access)
     node ('glast') {
-    
+
         stage('validate') {
             echo "[Validation]"
         }
-    
+
         for (x in variants) {
 	    // Need to bind the label variable before the closure - can't do 'for (label in labels)'
             def variant = x
