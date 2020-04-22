@@ -9,7 +9,7 @@ resources:
       endpoint: fermi-lat
 
 variables:
-- group: dependencies
+- name: dependencies
   value: azure_templates/dependencies.txt@ci
 
 jobs:
