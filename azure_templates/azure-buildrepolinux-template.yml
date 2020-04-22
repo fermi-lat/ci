@@ -1,6 +1,5 @@
 parameters:
   repo: ''
-  dependencies: ''
 
 jobs:
 
@@ -35,7 +34,9 @@ jobs:
       packageSpecs: 'python=2.7'
   - bash: |
       conda install --yes --quiet -c conda-forge -c fermi fermi-repoman scons swig
-      conda install --yes --quiet -c conda-forge -c fermi --file=${{ parameters.dependencies }}) 
+      wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
+      conda install --yes --quiet -c conda-forge -c fermi --file=dependencies.txt
+      rm dependencies.txt
       displayName: 'Setup Build environment'
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
