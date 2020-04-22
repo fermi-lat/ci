@@ -1,3 +1,6 @@
+parameters:
+  repo: ''
+
 resources:
   repositories:
     - repository: ci
@@ -8,9 +11,6 @@ resources:
 variables:
 - group: dependencies
   value: azure_templates/dependencies.txt@ci
-
-parameters:
-  repo: ''
 
 jobs:
 
