@@ -1,3 +1,14 @@
+resources:
+  repositories:
+    - repository: ci
+      type: github
+      name: fermi-lat/ci
+      endpoint: fermi-lat
+
+variables:
+- group: dependencies
+  value: azure_templates/dependencies.txt@ci
+
 parameters:
   repo: ''
 
@@ -33,9 +44,9 @@ jobs:
       environmentName: 'Build'
       packageSpecs: 'python=2.7'
   - bash: |
-      conda install --yes --quiet -c conda-forge/label/cf201901 -c fermi fermi-repoman scons swig
-      conda install --yes --quiet --only-deps -c conda-forge/label/cf201901 -c fermi fermitools
-    displayName: 'Setup Build environment'
+      conda install --yes --quiet -c conda-forge -c fermi fermi-repoman scons swig
+      conda install --yes --quiet -c conda-forge -c fermi --file=$(dependencies) 
+      displayName: 'Setup Build environment'
   - bash: |
       repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
       rm -rf ${{ parameters.repo }}
