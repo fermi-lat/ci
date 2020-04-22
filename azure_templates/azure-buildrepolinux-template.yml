@@ -9,22 +9,6 @@ jobs:
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
-  # This step is necessary because Conda no longer carries gcc-4.x 
-  # compilers.  This can be removed once the Fermitools are C++11
-  # compliant. 
-  #- bash: |
-  #    sudo update-alternatives --remove-all gcc
-  #    sudo update-alternatives --remove-all g++
-  #    sudo apt-get install --yes gcc-4.8 g++-4.8
-  #    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10
-  #    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 10
-  #    sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 30
-  #    sudo update-alternatives --set cc /usr/bin/gcc
-  #    sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 30
-  #    sudo update-alternatives --set c++ /usr/bin/g++
-  #    which gcc
-  #    gcc --version
-  #  displayName: 'Install and set up gcc-4.8'
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: 'Add conda to PATH'
@@ -33,9 +17,8 @@ jobs:
       environmentName: 'Build'
       packageSpecs: 'python=2.7'
   - bash: |
-      conda install --yes --quiet -c conda-forge -c fermi fermi-repoman scons swig
       wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
-      conda install --yes --quiet -c conda-forge -c fermi --file=dependencies.txt
+      conda install --yes --quiet -c conda-forge -c fermi fermi-repoman scons swig --file=dependencies.txt
       rm dependencies.txt
     displayName: 'Setup Build environment'
   - bash: |
@@ -44,9 +27,15 @@ jobs:
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
-      mkdir -p $(CONDA_PREFIX)/include/fftw
-      ln -s $(CONDA_PREFIX)/include/fftw3.* $(CONDA_PREFIX)/include/fftw
-    displayName: 'FFTW relinking'
-  - bash: |
-      scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2 $(CFLAGS)" --cxxflags="-O2 -std=c++11 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$(CONDA_PREFIX)/lib -fopenmp" ${{ parameters.repo }}
+      scons -C ScienceTools \
+      --site-dir=../SConsShared/site_scons \
+      --conda=$(CONDA_PREFIX) \
+      --use-path \
+      --with-cc="$(CONDA_PREFIX)/bin/cc" \
+      --with-cxx="$(CONDA_PREFIX)/bin/c++" \
+      --ccflags="$(CFLAGS)" \
+      --cxxflags="-std=c++14 $(CXXFLAGS)" \
+      --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/fermitools/lib:$(CONDA_PREFIX)/lib" \
+      --compile-opt \
+      ${{ parameters.repo }}
     displayName: 'Compile Package'
