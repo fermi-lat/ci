@@ -22,7 +22,6 @@ jobs:
       environmentName: 'Build'
       packageSpecs: 'python=2.7'
   - bash: |
-      conda install --yes --quiet -c conda-forge -c fermi fermi-repoman scons swig
       wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
       conda install --yes --quiet -c conda-forge -c fermi --file=dependencies.txt
       rm dependencies.txt
@@ -32,9 +31,16 @@ jobs:
       rm -rf ${{ parameters.repo }}
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
-  - bash: |
-      mkdir -p $(CONDA_PREFIX)/include/fftw
-      ln -s $(CONDA_PREFIX)/include/fftw3.* ${CONDA_PREFIX}/include/fftw
-    displayName: 'FFTW relinking'
-  - bash: scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc=/usr/bin/gcc --with-cxx=/usr/bin/g++ --ccflags="-O2" --cxxflags="-O2 -std=c++11" --ldflags="-Wl,-rpath,$(CONDA_PREFIX)/lib,-rpath,$(CONDA_PREFIX)/lib/root,-rpath,$CONDA_PREFIX/lib -headerpad_max_install_names" ${{ parameters.repo }}
+  - bash:   - bash: |
+      scons -C ScienceTools \
+      --site-dir=../SConsShared/site_scons \
+      --conda=$(CONDA_PREFIX) \
+      --use-path \
+      --with-cc="$(CONDA_PREFIX)/bin/cc" \
+      --with-cxx="$(CONDA_PREFIX)/bin/c++" \
+      --ccflags="$(CFLAGS)" \
+      --cxxflags="-std=c++14 $(CXXFLAGS)" \
+      --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/fermitools/lib:$(CONDA_PREFIX)/lib" \
+      --compile-opt \
+      ${{ parameters.repo }}
     displayName: 'Compile Package'    
