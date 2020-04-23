@@ -32,15 +32,5 @@ jobs:
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
-      scons -C ScienceTools \
-      --site-dir=../SConsShared/site_scons \
-      --conda=$(CONDA_PREFIX) \
-      --use-path \
-      --with-cc="$(CONDA_PREFIX)/bin/cc" \
-      --with-cxx="$(CONDA_PREFIX)/bin/c++" \
-      --ccflags="$(CFLAGS)" \
-      --cxxflags="-std=c++14 $(CXXFLAGS)" \
-      --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/fermitools/lib:$(CONDA_PREFIX)/lib" \
-      --compile-opt \
-      ${{ parameters.repo }}
+      scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc="$(CONDA_PREFIX)/bin/cc" --with-cxx="$(CONDA_PREFIX)/bin/c++" --ccflags="$(CFLAGS)" --cxxflags="-std=c++14 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/fermitools/lib:$(CONDA_PREFIX)/lib" --compile-opt ${{ parameters.repo }}
     displayName: 'Compile Package'    
