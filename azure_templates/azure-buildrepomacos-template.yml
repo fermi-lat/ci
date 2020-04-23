@@ -31,7 +31,7 @@ jobs:
       rm -rf ${{ parameters.repo }}
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
-  - bash:   - bash: |
+  - bash: |
       scons -C ScienceTools \
       --site-dir=../SConsShared/site_scons \
       --conda=$(CONDA_PREFIX) \
