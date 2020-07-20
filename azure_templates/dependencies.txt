@@ -12,6 +12,7 @@ gsl
 healpix_cxx
 matplotlib
 numpy>=1.11
+python=2.7.*
 pmw
 root>=6.0
 scipy
