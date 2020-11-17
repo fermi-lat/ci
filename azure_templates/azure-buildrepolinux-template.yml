@@ -12,10 +12,6 @@ jobs:
   # Manually adding conda to the PATH is a step required by Microsoft
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: 'Add conda to PATH'
-  - task: CondaEnvironment@0
-    inputs:
-      environmentName: 'Build'
-      packageSpecs: 'python=3.7'
   - bash: |
       wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
       conda install --yes -c conda-forge -c fermi --file=dependencies.txt
