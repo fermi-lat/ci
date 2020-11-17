@@ -18,7 +18,7 @@ jobs:
       rm dependencies.txt
     displayName: 'Setup Build environment'
   - bash: |
-      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
+      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools 
       rm -rf ${{ parameters.repo }}
       git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
