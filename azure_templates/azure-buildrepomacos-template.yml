@@ -20,7 +20,7 @@ jobs:
   - task: CondaEnvironment@0
     inputs:
       environmentName: 'Build'
-      packageSpecs: 'python=2.7'
+      packageSpecs: 'python=3.7'
   - bash: |
       wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
       conda install --yes --quiet -c conda-forge -c fermi --file=dependencies.txt
