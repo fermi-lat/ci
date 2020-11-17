@@ -1,6 +1,6 @@
 ape>=3
 aplpy
-astropy
+astropy<4
 blas
 clhep
 cppunit
@@ -11,12 +11,12 @@ git
 gsl
 healpix_cxx
 matplotlib
-numpy>=1.11
-python=3.7
+numpy>=1.17
+python>=3.7
 pmw
-root>=6.0
+root=6.22.*
 scipy
-scons
+scons 3.0.3.*
 swig
-wcslib<6
+wcslib 5.*
 xerces-c
