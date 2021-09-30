@@ -6,7 +6,7 @@ jobs:
   displayName: 'Run $(repo) tests on MacOS'
   timeoutInMinutes: 150
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-latest'
   
   steps:
   - bash: |
