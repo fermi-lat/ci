@@ -31,7 +31,6 @@ jobs:
       conda activate fermi-dev
     displayName: 'Setup Build environment'
   - bash: |
-      cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=\
-$CONDA_PREFIX
+      cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=$CONDA_PREFIX
       cmake --build RelWithDebInfo --parallel --target=${{ parameters.repo }}
     displayName: 'Compile Package'
