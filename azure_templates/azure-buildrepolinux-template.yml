@@ -21,7 +21,7 @@ jobs:
   - bash: |
       cd ScienceTools
       conda env create -n fermi-dev -f environments/fermitools-develop-linux.yml
-      conda activate fermi-dev
+      source activate fermi-dev
     displayName: 'Setup Build environment'
   - bash: |
       cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=$CONDA_PREFIX
