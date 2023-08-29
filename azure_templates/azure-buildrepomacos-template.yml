@@ -22,15 +22,16 @@ jobs:
       environmentName: 'Build'
       packageSpecs: 'python=3.7'
   - bash: |
-      wget https://raw.githubusercontent.com/fermi-lat/ci/master/azure_templates/dependencies.txt
-      conda install --yes --quiet -c conda-forge -c fermi --file=dependencies.txt
-      rm dependencies.txt
-    displayName: 'Setup Build environment'
-  - bash: |
-      repoman --remote-base https://github.com/fermi-lat checkout --force --develop ScienceTools conda
-      rm -rf ${{ parameters.repo }}
-      git clone https://github.com/fermi-lat/${{ parameters.repo }}
+      git clone --recurse-submodules https://github.com/fermi-lat/ScienceTools.git
+      rm -rf src/${{ parameters.repo }}
+      git clone https://github.com/fermi-lat/${{ parameters.repo }} src/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
-      scons -C ScienceTools --site-dir=../SConsShared/site_scons --conda=$(CONDA_PREFIX) --use-path --with-cc="$(CONDA_PREFIX)/bin/cc" --with-cxx="$(CONDA_PREFIX)/bin/c++" --ccflags="$(CFLAGS)" --cxxflags="-std=c++14 $(CXXFLAGS)" --ldflags="$(LDFLAGS) -Wl,-rpath,$(CONDA_PREFIX)/fermitools/lib:$(CONDA_PREFIX)/lib" --compile-opt ${{ parameters.repo }}
-    displayName: 'Compile Package'    
+      conda env create -n fermi-dev -f environments/fermitools-develop-linux.yml
+      conda activate fermi-dev
+    displayName: 'Setup Build environment'
+  - bash: |
+      cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=\
+$CONDA_PREFIX
+      cmake --build RelWithDebInfo --parallel --target=${{ parameters.repo }}
+    displayName: 'Compile Package'

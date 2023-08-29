@@ -19,7 +19,7 @@ resources:
       endpoint: fermi-lat
       
 variables:
-- group: DevOps Access Keys
+- group: Build Parameters
 - name: repo
   value:
 
