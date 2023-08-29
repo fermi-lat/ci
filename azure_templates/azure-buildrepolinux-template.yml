@@ -18,6 +18,7 @@ jobs:
       git clone https://github.com/fermi-lat/${{ parameters.repo }} src/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
+      ls 
       conda env create -n fermi-dev -f environments/fermitools-develop-linux.yml
       conda activate fermi-dev
     displayName: 'Setup Build environment'
