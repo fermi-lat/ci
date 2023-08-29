@@ -23,10 +23,12 @@ jobs:
       packageSpecs: 'python=3.7'
   - bash: |
       git clone --recurse-submodules https://github.com/fermi-lat/ScienceTools.git
-      rm -rf src/${{ parameters.repo }}
-      git clone https://github.com/fermi-lat/${{ parameters.repo }} src/${{ parameters.repo }}
+      rm -rf ScienceTools/src/${{ parameters.repo }}
+      cd ScienceTools/src/
+      git clone https://github.com/fermi-lat/${{ parameters.repo }}
     displayName: 'Clone Repository'
   - bash: |
+      cd ScienceTools
       conda env create -n fermi-dev -f environments/fermitools-develop-linux.yml
       conda activate fermi-dev
     displayName: 'Setup Build environment'
