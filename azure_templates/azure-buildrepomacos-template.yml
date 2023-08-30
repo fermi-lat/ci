@@ -34,6 +34,8 @@ jobs:
     displayName: 'Setup Build environment'
   - bash: |
       cd ScienceTools
+      source activate fermi-dev
+      conda list healpix_cxx
       cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=$CONDA_PREFIX
       cmake --build RelWithDebInfo --parallel --target=${{ parameters.repo }}
     displayName: 'Compile Package'
