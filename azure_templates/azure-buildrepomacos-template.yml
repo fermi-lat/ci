@@ -35,6 +35,7 @@ jobs:
   - bash: |
       cd ScienceTools
       source activate fermi-dev
+      conda install -c conda_forge healpix_cxx=3.31=h076e04d_1007
       conda list healpix_cxx
       cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=$CONDA_PREFIX
       cmake --build RelWithDebInfo --parallel --target=${{ parameters.repo }}
