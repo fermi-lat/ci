@@ -28,7 +28,7 @@ jobs:
       ls
       source activate fermi-dev
       conda list healpix_cxx
-      conda install -c conda-forge -y healpix_cxx=3.81
+      conda install -c conda-forge -y healpix_cxx=3.31=h8bf5a83_1005
       conda list healpix_cxx
       cmake -S . -B RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_PREFIX+PATH=$CONDA_PREFIX
       cmake --build RelWithDebInfo --parallel --target=${{ parameters.repo }}
