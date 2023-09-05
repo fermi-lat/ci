@@ -16,7 +16,7 @@ trigger:
     - azure_templates/azure-testrepomacos-template.yml
 
 variables:
-- group: DevOps Access Keys
+- group: Build Parameters
 
 jobs:
 
@@ -35,10 +35,10 @@ jobs:
   - task: CondaEnvironment@0
     inputs:
       environmentName: 'Env'
-      packageSpecs: 'python=2.7'
+      packageSpecs: 'python=3.10'
   # Install Repoman
   - bash: |
-      conda install --yes --quiet -c conda-forge/label/cf201901 -c fermi fermi-repoman
+      conda install --yes --quiet -c conda-forge -c fermi fermi-repoman
     displayName: 'Install Repoman'
   # Checkout all Fermitools repositories.  
   - bash: |
