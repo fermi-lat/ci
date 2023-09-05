@@ -52,10 +52,10 @@ jobs:
       git config --global user.name "jasercion"
       git config --global credential.helper store
       echo https://$(Github-Access-Token):@github.com>>~/.git-credentials
-      echo '-----BEGIN OPENSSH PRIVATE KEY-----'>>~/.ssh/id_ed25519
-      echo $(Github-Access-Token)>>~/.ssh/id_ed25519
-      echo '-----END OPENSSH PRIVATE KEY-----'>>~/.ssh/id_ed25519
-      ssh-add ~/.ssh/id_ed25519
+      echo '-----BEGIN OPENSSH PRIVATE KEY-----'>>~/id_ed25519
+      echo $(Github-Access-Token)>>~/id_ed25519
+      echo '-----END OPENSSH PRIVATE KEY-----'>>~/id_ed25519
+      ssh-add ~/id_ed25519
       for f in *; do
           if [[ $f != "ci" && $f != "ScienceTools" && $f != "STRcontainerSettings" && $f != "SConsShared" ]]; then
             echo "Updating $f..."
