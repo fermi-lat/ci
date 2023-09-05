@@ -48,8 +48,10 @@ jobs:
     displayName: 'Clone repositories'
   # Update all pipeline config files except for ci
   - bash: |
+      git config --global user.email "joseph.a.asercion@nasa.gov"
+      git config --global user.name "jasercion"
       git config --global credential.helper store
-      echo https://azure:$(Github-Access-Token)@github.com>>~/.git-credentials
+      echo https://jasercion:$(Github-Access-Token)@github.com>>~/.git-credentials
       ssh -T git@github.com
       for f in *; do
           if [[ $f != "ci" && $f != "ScienceTools" && $f != "STRcontainerSettings" && $f != "SConsShared" ]]; then
