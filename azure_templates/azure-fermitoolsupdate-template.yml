@@ -52,7 +52,7 @@ jobs:
       git config --global user.email "joseph.a.asercion@nasa.gov"
       git config --global user.name "jasercion"
       git config --global credential.helper store
-      echo https://$(Github-Access-Token):x-oauth-basic@github.com>>~/.git-credentials
+      echo https://jasercion:$(Github-Access-Token)@github.com>>~/.git-credentials
       git commit -m "Patch iteration triggered by ${{ parameters.repo }} repository." -m "Trigger: $(commit)   $(author)   Message: $(message)" meta.yaml
       git push
     displayName: 'Push change to Fermitools-conda repository'
