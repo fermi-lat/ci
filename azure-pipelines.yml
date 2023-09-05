@@ -55,11 +55,9 @@ jobs:
       eval "$(ssh-agent -s)"
       mkdir ~/.ssh
       chmod 700 ~/.ssh
-      touch ~/.ssh/id_ed25519
       echo '-----BEGIN OPENSSH PRIVATE KEY-----'>>~/.ssh/id_ed25519
       echo $(Github-Access-Token)>>~/.ssh/id_ed25519
       echo '-----END OPENSSH PRIVATE KEY-----'>>~/.ssh/id_ed25519
-      chmod 700 ~/.ssh/id_ed25519
       ssh-add ~/.ssh/id_ed25519
       for f in *; do
           if [[ $f != "ci" && $f != "ScienceTools" && $f != "STRcontainerSettings" && $f != "SConsShared" ]]; then
