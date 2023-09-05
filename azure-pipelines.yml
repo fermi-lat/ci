@@ -61,7 +61,7 @@ jobs:
             sed -i "s/value:/value: ${f}/g" azure-pipelines.yml
             git add *
             git commit -m "Propagate Azure Pipeline Template Changes" azure-pipelines.yml
-            git push
+            git push -u origin master
             cd ../
           fi
       done
