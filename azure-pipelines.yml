@@ -52,6 +52,7 @@ jobs:
       git config --global user.name "jasercion"
       git config --global credential.helper store
       echo https://$(Github-Access-Token):@github.com>>~/.git-credentials
+      eval "$(ssh-agent -s)"
       echo '-----BEGIN OPENSSH PRIVATE KEY-----'>>~/id_ed25519
       echo $(Github-Access-Token)>>~/id_ed25519
       echo '-----END OPENSSH PRIVATE KEY-----'>>~/id_ed25519
