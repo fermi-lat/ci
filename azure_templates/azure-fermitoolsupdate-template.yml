@@ -31,19 +31,19 @@ jobs:
       echo "##vso[task.setvariable variable=message]$(git log -1 | tail -1 | awk '{$1=$1};1' | tr -d '\012\015')"
     displayName: 'Extract package repository metadata'
   - bash: |
-      cd ../fermitools-conda
+      cd ../fermitools-conda/recipe
       echo "##vso[task.setvariable variable=version]$(grep -i 'set version' meta.yaml | awk '{ print $5}' | sed 's/"//g' | cut -d "." -f 1)"
       echo "##vso[task.setvariable variable=revision]$(grep -i 'set version' meta.yaml | awk '{ print $5}' | sed 's/"//g' | cut -d "." -f 2)"
       echo "##vso[task.setvariable variable=patch]$(grep -i 'set version' meta.yaml | awk '{ print $5}' | sed 's/"//g' | cut -d "." -f 3)"
     displayName: 'Extract version information'
   - bash: |
-      cd ../fermitools-conda
+      cd ../fermitools-conda/recipe
       echo Patch is $(patch)
       echo "##vso[task.setvariable variable=oldpatch]$(patch)"
       echo "##vso[task.setvariable variable=patch]$(expr $(patch) + 1)"
     displayName: 'Iterate Patch Number'
   - bash: |
-      cd ../fermitools-conda
+      cd ../fermitools-conda/recipe
       echo Patch is $(patch)
       sed -i 's/$(version).$(revision).$(oldpatch)/$(version).$(revision).$(patch)/g' meta.yaml
     displayName: 'Update Patch Number in Fermitools-Conda meta.yaml'
