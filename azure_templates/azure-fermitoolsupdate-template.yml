@@ -4,6 +4,8 @@ parameters:
 jobs:
 - job: fermitoolscondaupdate
   displayName: 'Update Fermitools-Conda Metadata'
+  pool:
+    vmImage: 'ubuntu-latest'
   variables:
     - name: version
       value: 
